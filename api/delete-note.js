@@ -14,7 +14,7 @@ exports.handler = async (event) => {
 
         return {
             statusCode: 200,
-            headers: util.getResponseHeaders();
+            headers: util.getResponseHeaders(),
             body: JSON.stringify('')
         }
 
