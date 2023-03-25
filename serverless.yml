@@ -11,6 +11,20 @@
 #
 # Happy Coding!
 
+
+custom:
+  allowedHeaders:
+    - Accept
+    - Content-Type
+    - Content-Length
+    - Authorization
+    - X-Amz-Date
+    - X-Api-Key
+    - X-Amz-Security-Token
+    - X-Amz-User-Agent
+    - app_user_id
+    - app_user_name
+
 service: sls-notes-backend
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
@@ -30,6 +44,13 @@ provider:
   endpointType: regional
   environment: 
     NOTES_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:PutItem
+        - dynamodb:DeleteIte
+      Resource: "arn:aws:dynamodb:${opt-region, self:provider:region}:*:table/${self:provider.environment.NOTES_TABLE}"
 
 resources:
   Resources:
@@ -63,6 +84,60 @@ resources:
             ProvisionedThroughput:
               ReadCapacityUnits: 1
               WriteCapacityUnits: 1
+
+
+
+functions:
+  add-note:
+    handler: api/add-note.handler
+    description: POST /note
+    events:
+      - http:
+          path: note
+          method: post
+          cors: 
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
+  update-note:
+    handler: api/update-note.handler
+    description: Patch /note
+    events:
+      - http:
+          path: note
+          method: patch
+          cors: 
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}       
+  get-note:
+    handler: api/get-note.handler
+    description: GET /note/n/{note_id}
+    events:
+      - http:
+          path: note/n/{note_id}
+          method: get
+          cors: 
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
+  get-notes:
+    handler: api/get-notes.handler
+    description: GET /notes
+    events:
+      - http:
+          path: notes
+          method: get
+          cors: 
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
+  delete-note:
+    handler: api/delete-note.handler
+    description: DELETE /note
+    events:
+      - http:
+          path: note/t/{timestamp}
+          method: delete
+          cors: 
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
 
 # you can overwrite defaults here
 #  stage: dev
@@ -98,9 +173,9 @@ resources:
 #    - include-me.js
 #    - include-me-dir/**
 
-functions:
-  hello:
-    handler: handler.hello
+
+
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -152,3 +227,7 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
+
+
+plugins:
+  - serverless-offline

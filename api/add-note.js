@@ -12,6 +12,8 @@ const uuidv4 = require('uuid/v4');
 
 
 exports.handler = async (event) => {
+
+
     try {
 
         let item = JSON.parse(event.body).Item;
@@ -44,4 +46,6 @@ exports.handler = async (event) => {
             })
         }
     }
+
+
 }
