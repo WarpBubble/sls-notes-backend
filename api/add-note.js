@@ -17,7 +17,7 @@ exports.handler = async (event) => {
         let item = JSON.parse(event.body).Item;
         item.user_id = util.getUserId(event.headers);
         item.user_name = util.getUserName(event.headers);
-        item.node_id = item.user_id + ':' + uuidv4();
+        item.note_id = item.user_id + ':' + uuidv4();
         item.timestamp = moment().unix();
         item.expires = moment().add(90, 'day').unix();
 
