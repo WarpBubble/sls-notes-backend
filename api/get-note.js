@@ -11,7 +11,7 @@ const _ = require("underscore");
 
 exports.handler = async (event) => {
   try {
-    let note_id = decodeURIComponent0(event.pathParameters.note_id);
+    let note_id = decodeURIComponent(event.pathParameters.note_id);
 
     let params = {
       TableName: tableName,
@@ -33,7 +33,7 @@ exports.handler = async (event) => {
       };
     } else {
       return {
-        tatusCode: 400,
+        statusCode: 400,
         headers: util.getResponseHeaders()
       };
     }

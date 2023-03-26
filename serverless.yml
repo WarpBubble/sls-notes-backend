@@ -24,6 +24,15 @@ custom:
     - X-Amz-User-Agent
     - app_user_id
     - app_user_name
+  postsTableName: NOTES_TABLE${self:provider.stage}
+  dynamodb:
+    stages:
+      - prod
+    start:
+      migrate: true
+  serverless-offline:
+    resourceRoutes: true
+    
 
 service: sls-notes-backend
 # app and org for use with dashboard.serverless.com
@@ -231,3 +240,4 @@ functions:
 
 plugins:
   - serverless-offline
+  - serverless-dynamodb-local

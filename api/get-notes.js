@@ -19,8 +19,8 @@ exports.handler = async (event) => {
         let params = {
             TableName: tableName,
             KeyConditionExpression: "user_id = :uid",
-            ExpressionAttributesValues: {
-                ":uuid": user_id
+            ExpressionAttributeValues: {
+                ":uid": user_id
             },
             Limit: limit,
             ScanIndexForward: false

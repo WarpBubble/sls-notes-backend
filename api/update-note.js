@@ -8,8 +8,8 @@ const tableName = process.env.NOTES_TABLE;
 
 const util = require('./utils');
 const moment = require('moment');
-const uuidv4 = require('uuid/v4');
-const { timeStamp } = require('console');
+//const uuidv4 = require('uuid/v4');
+//const { timeStamp } = require('console');
 
 
 
@@ -23,14 +23,14 @@ exports.handler = async (event) => {
         item.expires = moment().add(90, 'day').unix();
 
         let data = await dynamodb.put({
-            TableName: tablename,
+            TableName: tableName,
             Item: item,
             ConditionExpression: '#t = :t',
             ExpressionAttributeNames: {
                 '#t' : 'timestamp'
             },
             ExpressionAttributeValues: {
-                ':t' : item.timeStamp,
+                ':t' : item.timestamp
             }
         }).promise()
 

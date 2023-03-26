@@ -12,7 +12,7 @@ const util = require('./utils')
 exports.handler = async (event) => {
     try {
 
-        let timeStamp = parseInt(event.pathParameters.timestamp);
+        let timestamp = parseInt(event.pathParameters.timestamp);
 
         let params = {
             TableName: tableName,
