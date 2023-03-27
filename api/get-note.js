@@ -1,9 +1,17 @@
 //** Route: Get /note/n/ {note_id} */
 
+let options = {}
+if (process.env.IS_OFFLINE) {
+    options = {
+        region: 'localhost',
+        endpoint: 'http://localhost:8000'
+    }
+}
+
 const AWS = require("aws-sdk");
 AWS.config.update({ region: "ap-southeast-2" });
 
-const dynamodb = new AWS.DynamoDB.DocumentClient();
+const dynamodb = new AWS.DynamoDB.DocumentClient(options);
 const tableName = process.env.NOTES_TABLE;
 
 const util = require("./utils");

@@ -27,11 +27,27 @@ custom:
   postsTableName: NOTES_TABLE${self:provider.stage}
   dynamodb:
     stages:
-      - prod
+      - dev
     start:
+      http-port: 8000
+      httpsProtocol: ssl
+      inMemory: true
       migrate: true
-  serverless-offline:
-    resourceRoutes: true
+    migration:
+      dir: offline/migrations
+    serverless-offline:
+      resourceRoutes: true
+      noPrependStageInUrl: true
+    httpsProtocol: 'cert'
+    host: local.sustainability360.co.nz
+    dynamodb:
+      stages:
+        - dev:
+      # flags we want to specify when we run dynamodb local
+      start:
+        - migrate: true
+  
+  
     
 
 service: sls-notes-backend
@@ -47,7 +63,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: ap-southeast-2
-  stage: prod
+  stage: dev
   memorySize: 128
   timeout: 5
   endpointType: regional
@@ -66,6 +82,7 @@ resources:
     NotesTable:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Retain
+      ## how my dynamo db table will work
       Properties:
         TableName: ${self:provider.environment.NOTES_TABLE}
         AttributeDefinitions:
@@ -75,17 +92,18 @@ resources:
             AttributeType: N
           - AttributeName: note_id
             AttributeType: S
-        KeySchema:
+        KeySchema: 
           - AttributeName: user_id
             KeyType: HASH
           - AttributeName: timestamp
             KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         GlobalSecondaryIndexes:
           - IndexName: note_id-index
-            KeySchema:
+            KeySchema: 
               - AttributeName: note_id 
                 KeyType: HASH
             Projection:
@@ -93,6 +111,7 @@ resources:
             ProvisionedThroughput:
               ReadCapacityUnits: 1
               WriteCapacityUnits: 1
+
 
 
 
@@ -239,5 +258,6 @@ functions:
 
 
 plugins:
-  - serverless-offline
   - serverless-dynamodb-local
+  - serverless-offline
+  

@@ -4,7 +4,12 @@
 const AWS = require('aws-sdk');
 AWS.config.update({ region: 'ap-southeast-2' })
 
-const dynamodb = new AWS.DynamoDB.DocumentClient();
+const dynamodb = new AWS.DynamoDB.DocumentClient({
+    region: "ap-southeast-2",
+    accessKeyId: "fake",
+    secretAccessKeyId: "fake",
+    endpoint: "http://localhost:8000"
+});
 const tableName = process.env.NOTES_TABLE;
 
 const util = require('./utils');
